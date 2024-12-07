@@ -15,7 +15,7 @@ function bootstrap() {
     apt update && apt-get install $packages -y
   fi
 
-  curl -so "$TMP_WORK_DIR/helper-functions" https://raw.githubusercontent.com/Rajinsharwar/test-wp/master/functions.sh
+  curl -so "$TMP_WORK_DIR/helper-functions" https://raw.githubusercontent.com/Rajinsharwar/test-wp/master/functions
 }
 
 # Main installation function, to setup and run once the installer script is loaded.
