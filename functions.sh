@@ -298,7 +298,7 @@ function check_depdendencies() {
 function download_and_install_easyengine() {
   lwp_log_info1 "Downloading EasyEngine phar"
   # Download EasyEngine phar.
-  wget -O "$LWP4_BINARY" https://raw.githubusercontent.com/Rajinsharwar/test-lwp/master/phar/launchwp.phar
+  wget -O "$LWP4_BINARY" https://raw.githubusercontent.com/Rajinsharwar/test-lwp/master/launchwp.phar
   # Make it executable.
   chmod +x "$LWP4_BINARY"
 }
