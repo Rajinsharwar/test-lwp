@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 # Looking up linux distro and declaring it globally.
-export LWP_LINUX_DISTRO=$(lsb_release -i | awk '{print $3}')
-export LWP_ROOT_DIR="/opt/easyengine"
-export LWP4_BINARY="/usr/local/bin/lwp"
-export LOG_FILE="$LWP_ROOT_DIR/logs/install.log"
+export EE_LINUX_DISTRO=$(lsb_release -i | awk '{print $3}')
+export EE_ROOT_DIR="/opt/easyengine"
+export EE4_BINARY="/usr/local/bin/ee"
+export LOG_FILE="$EE_ROOT_DIR/logs/install.log"
 
 function bootstrap() {
   if ! command -v curl > /dev/null 2>&1; then
@@ -38,12 +38,12 @@ function do_install() {
 
 
   check_depdendencies
-  lwp_log_info1 "Setting up EasyEngine"
+  ee_log_info1 "Setting up EasyEngine"
   download_and_install_easyengine
-  lwp_log_info1 "Pulling EasyEngine docker images"
+  ee_log_info1 "Pulling EasyEngine docker images"
   pull_easyengine_images
   add_ssl_renew_cron
-  lwp_log_info1 "Run \"lwp help site\" for more information on how to create a site."
+  ee_log_info1 "Run \"ee help site\" for more information on how to create a site."
   rm /helper-functions
 }
 

@@ -12,103 +12,103 @@ has_tty() {
   fi
 }
 
-lwp_log_quiet() {
+ee_log_quiet() {
   declare desc="log quiet formatter"
-  if [[ -z "$LWP_QUIET_OUTPUT" ]]; then
+  if [[ -z "$EE_QUIET_OUTPUT" ]]; then
     echo "$*"
   fi
 }
 
-lwp_log_info1() {
+ee_log_info1() {
   declare desc="log info1 formatter"
   echo "-----> $*"
 }
 
-lwp_log_info2() {
+ee_log_info2() {
   declare desc="log info2 formatter"
   echo "=====> $*"
 }
 
-lwp_log_info1_quiet() {
+ee_log_info1_quiet() {
   declare desc="log info1 formatter (with quiet option)"
-  if [[ -z "$LWP_QUIET_OUTPUT" ]]; then
+  if [[ -z "$EE_QUIET_OUTPUT" ]]; then
     echo "-----> $*"
   else
     return 0
   fi
 }
 
-lwp_log_info2_quiet() {
+ee_log_info2_quiet() {
   declare desc="log info2 formatter (with quiet option)"
-  if [[ -z "$LWP_QUIET_OUTPUT" ]]; then
+  if [[ -z "$EE_QUIET_OUTPUT" ]]; then
     echo "=====> $*"
   else
     return 0
   fi
 }
 
-lwp_col_log_info1() {
+ee_col_log_info1() {
   declare desc="columnar log info1 formatter"
   printf "%-6s %-18s %-25s %-25s %-25s\n" "----->" "$@"
 }
 
-lwp_col_log_info1_quiet() {
+ee_col_log_info1_quiet() {
   declare desc="columnar log info1 formatter (with quiet option)"
-  if [[ -z "$LWP_QUIET_OUTPUT" ]]; then
+  if [[ -z "$EE_QUIET_OUTPUT" ]]; then
     printf "%-6s %-18s %-25s %-25s %-25s\n" "----->" "$@"
   else
     return 0
   fi
 }
 
-lwp_col_log_info2() {
+ee_col_log_info2() {
   declare desc="columnar log info2 formatter"
   printf "%-6s %-18s %-25s %-25s %-25s\n" "=====>" "$@"
 }
 
-lwp_col_log_info2_quiet() {
+ee_col_log_info2_quiet() {
   declare desc="columnar log info2 formatter (with quiet option)"
-  if [[ -z "$LWP_QUIET_OUTPUT" ]]; then
+  if [[ -z "$EE_QUIET_OUTPUT" ]]; then
     printf "%-6s %-18s %-25s %-25s %-25s\n" "=====>" "$@"
   else
     return 0
   fi
 }
 
-lwp_col_log_msg() {
+ee_col_log_msg() {
   declare desc="columnar log formatter"
   printf "%-25s %-25s %-25s %-25s\n" "$@"
 }
 
-lwp_col_log_msg_quiet() {
+ee_col_log_msg_quiet() {
   declare desc="columnar log formatter (with quiet option)"
-  if [[ -z "$LWP_QUIET_OUTPUT" ]]; then
+  if [[ -z "$EE_QUIET_OUTPUT" ]]; then
     printf "%-25s %-25s %-25s %-25s\n" "$@"
   else
     return 0
   fi
 }
 
-lwp_log_verbose_quiet() {
+ee_log_verbose_quiet() {
   declare desc="log verbose formatter (with quiet option)"
-  if [[ -z "$LWP_QUIET_OUTPUT" ]]; then
+  if [[ -z "$EE_QUIET_OUTPUT" ]]; then
     echo "       $*"
   else
     return 0
   fi
 }
 
-lwp_log_verbose() {
+ee_log_verbose() {
   declare desc="log verbose formatter"
   echo "       $*"
 }
 
-lwp_log_warn() {
+ee_log_warn() {
   declare desc="log warning formatter"
   echo " !     $*" 1>&2
 }
 
-lwp_log_fail() {
+ee_log_fail() {
   declare desc="log fail formatter"
   echo "$@" 1>&2
   exit 1
@@ -128,16 +128,16 @@ parse_args() {
 
     case "$arg" in
       --quiet)
-        export LWP_QUIET_OUTPUT=1
+        export EE_QUIET_OUTPUT=1
         ;;
       --trace)
-        export LWP_TRACE=1
+        export EE_TRACE=1
         ;;
       --dry-run)
-        export LWP_DRY_RUN=1
+        export EE_DRY_RUN=1
         ;;
       --all)
-        export LWP_SITE_ALL=1
+        export EE_SITE_ALL=1
         ;;
       --remote-host)
         export REMOTE_HOST=${args[$next_index]}
@@ -150,7 +150,7 @@ parse_args() {
 }
 
 function check_ssh() {
-  lwp_log_info1 "Checking connection to remote server."
+  ee_log_info1 "Checking connection to remote server."
   ssh -q -i $SSH_KEY "root@$REMOTE_HOST" exit >/dev/null 2>&1 # No need to show this output
   if [ $? -eq 0 ]; then
     true
@@ -158,15 +158,15 @@ function check_ssh() {
     if [ ! -f "$SSH_KEY" ]; then
       ssh-keygen -t rsa -b 4096 -N '' -C 'ee3_to_ee4_key' -f $SSH_KEY >/dev/null 2>&1 # No need to show this output
     else
-      lwp_log_info2 "If you have not done so already, you need to add the following"
+      ee_log_info2 "If you have not done so already, you need to add the following"
       cat "${SSH_KEY}.pub"
-      lwp_log_info2 "to \`/root/.ssh/authorized_keys\` on the remote server"
-      lwp_log_fail "Unable to connect to remote server. Please check if \`ssh root@$REMOTE_HOST\` is working."
+      ee_log_info2 "to \`/root/.ssh/authorized_keys\` on the remote server"
+      ee_log_fail "Unable to connect to remote server. Please check if \`ssh root@$REMOTE_HOST\` is working."
       false
     fi
-    lwp_log_info2 "Add the following"
+    ee_log_info2 "Add the following"
     cat "${SSH_KEY}.pub"
-    lwp_log_info2 "to \`/root/.ssh/authorized_keys\` on the remote server"
+    ee_log_info2 "to \`/root/.ssh/authorized_keys\` on the remote server"
     false
   fi
 }
@@ -182,7 +182,7 @@ function run_remote_command() {
 }
 
 function setup_docker() {
-  lwp_log_info1 "Installing Docker"
+  ee_log_info1 "Installing Docker"
   # Check if docker exists. If not start docker installation.
   if ! command -v docker >/dev/null 2>&1; then
     # Running standard docker installation.
@@ -192,18 +192,18 @@ function setup_docker() {
 
   # Check if docker-compose exists. If not start docker-compose installation.
   if ! command -v docker-compose >/dev/null 2>&1; then
-    lwp_log_info1 "Installing Docker-Compose"
+    ee_log_info1 "Installing Docker-Compose"
     curl -L https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
     chmod +x /usr/local/bin/docker-compose
   fi
 }
 
 function setup_php() {
-  lwp_log_info1 "Installing PHP"
+  ee_log_info1 "Installing PHP"
   if ! command -v php >/dev/null 2>&1; then
     # Checking linux distro. Currently only Ubuntu and Debian are supported.
-    if [ "$LWP_LINUX_DISTRO" == "Ubuntu" ]; then
-      lwp_log_info1 "Installing PHP cli"
+    if [ "$EE_LINUX_DISTRO" == "Ubuntu" ]; then
+      ee_log_info1 "Installing PHP cli"
       # Adding software-properties-common for add-apt-repository.
       apt-get install -y software-properties-common
       # Adding ondrej/php repository for installing php, this works for all ubuntu flavours.
@@ -211,8 +211,8 @@ function setup_php() {
       apt-get update && apt-get -y upgrade
       # Installing php-cli, which is the minimum requirement to run EasyEngine
       apt-get -y install php8.3-cli
-    elif [ "$LWP_LINUX_DISTRO" == "Debian" ]; then
-      lwp_log_info1 "Installing PHP cli"
+    elif [ "$EE_LINUX_DISTRO" == "Debian" ]; then
+      ee_log_info1 "Installing PHP cli"
       # Nobody should have to change their name to enable a package installation
       # https://github.com/oerdnj/deb.sury.org/issues/56#issuecomment-166077158
       # That's why we're installing the locales package.
@@ -228,7 +228,7 @@ function setup_php() {
 }
 
 function setup_php_extensions() {
-  lwp_log_info1 "Installing PHP extensions"
+  ee_log_info1 "Installing PHP extensions"
   # Setting up the three required php extensions for EasyEngine.
   if command -v php >/dev/null 2>&1; then
     php_extensions=(pcntl curl sqlite3 zip)
@@ -237,15 +237,15 @@ function setup_php_extensions() {
     fi
     # Reading the php version.
     default_php_version="$(readlink -f /usr/bin/php | gawk -F "php" '{ print $2}')"
-    lwp_log_info1 "Installed PHP : $default_php_version"
-    lwp_log_info1 "Checking if required PHP modules are installed..."
+    ee_log_info1 "Installed PHP : $default_php_version"
+    ee_log_info1 "Checking if required PHP modules are installed..."
     packages=""
     for module in "${php_extensions[@]}"; do
       if ! php -m | grep $module >/dev/null 2>&1; then
-        lwp_log_info1 "$module not installed. Installing..."
+        ee_log_info1 "$module not installed. Installing..."
         packages+="php$default_php_version-$module "
       else
-        lwp_log_info1 "$module is already installed"
+        ee_log_info1 "$module is already installed"
       fi
       apt install -y $packages
     done
@@ -253,27 +253,27 @@ function setup_php_extensions() {
 }
 
 function create_swap() {
-  lwp_log_info2 "Enabling 1GiB swap"
-  LWP_SWAP_FILE="/ee-swapfile"
-  fallocate -l 1G $LWP_SWAP_FILE && \
-  chmod 600 $LWP_SWAP_FILE && \
-  chown root:root $LWP_SWAP_FILE && \
-  mkswap $LWP_SWAP_FILE && \
-  swapon $LWP_SWAP_FILE
+  ee_log_info2 "Enabling 1GiB swap"
+  EE_SWAP_FILE="/ee-swapfile"
+  fallocate -l 1G $EE_SWAP_FILE && \
+  chmod 600 $EE_SWAP_FILE && \
+  chown root:root $EE_SWAP_FILE && \
+  mkswap $EE_SWAP_FILE && \
+  swapon $EE_SWAP_FILE
 }
 
 function check_swap() {
-  lwp_log_info1 "Checking swap"
+  ee_log_info1 "Checking swap"
   if free | awk '/^Swap:/ {exit !$2}'; then
     :
   else
-    lwp_log_info1 "No swap detected"
+    ee_log_info1 "No swap detected"
     create_swap
   fi
 }
 
 function setup_host_dependencies() {
-    if [ "$LWP_LINUX_DISTRO" == "Ubuntu" ] || [ "$LWP_LINUX_DISTRO" == "Debian" ]; then
+    if [ "$EE_LINUX_DISTRO" == "Ubuntu" ] || [ "$EE_LINUX_DISTRO" == "Debian" ]; then
       if ! command -v ip >> $LOG_FILE 2>&1; then
         echo "Installing iproute2"
         apt update && apt install iproute2 -y
@@ -282,9 +282,9 @@ function setup_host_dependencies() {
 }
 
 function check_depdendencies() {
-  lwp_log_info1 "Checking dependencies"
+  ee_log_info1 "Checking dependencies"
   if ! command -v sqlite3 >/dev/null 2>&1; then
-    lwp_log_info2 "Installing sqlite3"
+    ee_log_info2 "Installing sqlite3"
     apt install sqlite3 -y
   fi
 
@@ -296,17 +296,17 @@ function check_depdendencies() {
 }
 
 function download_and_install_easyengine() {
-  lwp_log_info1 "Downloading EasyEngine phar"
+  ee_log_info1 "Downloading EasyEngine phar"
   # Download EasyEngine phar.
-  wget -O "$LWP4_BINARY" https://raw.githubusercontent.com/Rajinsharwar/test-lwp/master/launchwp.phar
+  wget -O "$EE4_BINARY" https://raw.githubusercontent.com/Rajinsharwar/test-lwp/master/easyengine.phar
   # Make it executable.
-  chmod +x "$LWP4_BINARY"
+  chmod +x "$EE4_BINARY"
 }
 
 function pull_easyengine_images() {
-  # Running LWP migrations and pulling of images by first `ee` invocation.
-  lwp_log_info1 "Pulling EasyEngine docker images"
-  "$LWP4_BINARY" cli info
+  # Running EE migrations and pulling of images by first `ee` invocation.
+  ee_log_info1 "Pulling EasyEngine docker images"
+  "$EE4_BINARY" cli info
 }
 
 function add_ssl_renew_cron() {
@@ -320,11 +320,11 @@ function add_ssl_renew_cron() {
 
   if [ $? -eq 0 ]
   then
-    lwp_log_info1 "Adding ssl-renew cron"
-    crontab -l > lwp_cron
-    echo -e $SSL_RENEW_CRON >> lwp_cron
-    crontab lwp_cron
-    rm lwp_cron
+    ee_log_info1 "Adding ssl-renew cron"
+    crontab -l > ee_cron
+    echo -e $SSL_RENEW_CRON >> ee_cron
+    crontab ee_cron
+    rm ee_cron
   fi
   
   set +o noglob
