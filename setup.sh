@@ -25,7 +25,7 @@ function do_install() {
 
   # Open standard out at `$LOG_FILE` for write.
   # Write to file as well as terminal
-  exec 1> >(tlwp -a "$LOG_FILE")
+  exec 1> >(tee -a "$LOG_FILE")
 
   # Redirect standard error to standard out such that
   # standard error ends up going to wherever standard
