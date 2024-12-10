@@ -15,7 +15,7 @@ function bootstrap() {
     apt update && apt-get install $packages -y
   fi
 
-  curl -so "$TMP_WORK_DIR/helper-functions" https://raw.githubusercontent.com/Rajinsharwar/test-lwp/master/functions.sh
+  curl -so "$TMP_WORK_DIR/helper-functions" https://raw.githubusercontent.com/Rajinsharwar/test-lwp/master/functions.sh?token
 }
 
 # Main installation function, to setup and run once the installer script is loaded.
