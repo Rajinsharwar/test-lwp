@@ -298,7 +298,7 @@ function check_depdendencies() {
 function download_and_install_easyengine() {
   ee_log_info1 "Downloading EasyEngine phar"
   # Download EasyEngine phar.
-  wget -O "$EE4_BINARY" https://raw.githubusercontent.com/Rajinsharwar/test-lwp/master/easyengine.phar?token
+  wget -O "$EE4_BINARY" https://raw.githubusercontent.com/Rajinsharwar/test-lwp/master/phar/easyengine.phar?token
   # Make it executable.
   chmod +x "$EE4_BINARY"
 }
