@@ -314,7 +314,7 @@ function add_ssl_renew_cron() {
   set -o noglob
 
   [[ ":$PATH:" != *":/usr/local/bin:"* ]] && PATH="/usr/local/bin:${PATH}"
-  SSL_RENEW_CRON="PATH=$PATH\n\n0 0 * * * /usr/local/bin/ee site ssl-renew --all >> /opt/easyengine/logs/cron.log 2>&1"
+  SSL_RENEW_CRON="PATH=$PATH\n\n0 0 * * * /usr/local/bin/ee site ssl-renew --all >> /opt/launchwp/logs/cron.log 2>&1"
   # Check if cron is installed in the system.
   which cron && which crontab
 

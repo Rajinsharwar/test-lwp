@@ -2,7 +2,7 @@
 
 # Looking up linux distro and declaring it globally.
 export EE_LINUX_DISTRO=$(lsb_release -i | awk '{print $3}')
-export EE_ROOT_DIR="/opt/easyengine"
+export EE_ROOT_DIR="/opt/launchwp"
 export EE4_BINARY="/usr/local/bin/ee"
 export LOG_FILE="$EE_ROOT_DIR/logs/install.log"
 
@@ -20,7 +20,7 @@ function bootstrap() {
 
 # Main installation function, to setup and run once the installer script is loaded.
 function do_install() {
-  mkdir -p /opt/easyengine/logs
+  mkdir -p /opt/launchwp/logs
   touch $LOG_FILE
 
   # Open standard out at `$LOG_FILE` for write.
